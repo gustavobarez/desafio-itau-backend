@@ -19,6 +19,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @RequestMapping("/estatistica")
 public class StatisticController {
 
+    private final int interval = 60;
+
     TransactionService transactionService;
 
     public StatisticController(TransactionService transactionService) {
@@ -30,7 +32,7 @@ public class StatisticController {
     })
     @GetMapping
     public ResponseEntity<Statistic> estatisticas() {
-        final var initialHour = OffsetDateTime.now().minusSeconds(60);
+        final var initialHour = OffsetDateTime.now().minusSeconds(interval);
         return ResponseEntity.ok(transactionService.statistics(initialHour));
     }
 }
