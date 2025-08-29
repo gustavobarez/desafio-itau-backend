@@ -1,4 +1,4 @@
-.PHONY: default run build test docs clean deploy
+.PHONY: default run build test docs docker-run docker-build deploy clean
 
 default: run
 
@@ -13,6 +13,12 @@ test:
 
 docs:
 	mvn springdoc-openapi:generate
+
+docker-build:
+	docker build -t myapp .
+
+docker-run:
+	docker run -p 8080:8080 myapp
 
 deploy:
 	@echo "Deploy placeholder"
