@@ -1,10 +1,14 @@
 package br.com.gustavobarez.desafio_itau_backend.transaction;
 
 import java.time.OffsetDateTime;
+import java.util.DoubleSummaryStatistics;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StopWatch;
+
+import br.com.gustavobarez.desafio_itau_backend.statistic.Statistic;
 
 @Service
 public class TransactionService {
@@ -55,6 +59,28 @@ public class TransactionService {
         logger.info("Limpando todas as transações");
         repository.clear();
         logger.info("Transações limpas");
+    }
+
+    public Statistic statistics(OffsetDateTime initialHour) {
+        logger.info("Iniciando cálculo das estatísticas");
+
+        StopWatch sw = new StopWatch();
+        sw.start();
+
+        Statistic stat;
+        if (repository.list().isEmpty()) {
+            stat = new Statistic();
+        } else {
+            DoubleSummaryStatistics stats = repository.list().stream()
+                    .filter(t -> !t.getDataHora().isBefore(initialHour))
+                    .mapToDouble(t -> t.getValor().doubleValue())
+                    .summaryStatistics();
+            stat = new Statistic(stats);
+        }
+
+        sw.stop();
+        logger.info("Estatísticas calculadas em {} ms", sw.getTotalTimeMillis());
+        return stat;
     }
 
 }

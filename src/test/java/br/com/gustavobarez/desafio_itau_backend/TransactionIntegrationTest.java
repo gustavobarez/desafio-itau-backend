@@ -17,21 +17,21 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 
-import br.com.gustavobarez.desafio_itau_backend.transaction.TransactionRepository;
 import br.com.gustavobarez.desafio_itau_backend.transaction.TransactionRequest;
+import br.com.gustavobarez.desafio_itau_backend.transaction.TransactionService;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class TransactionIntegrationTest {
-    
+
     @Autowired
     private TestRestTemplate restTemplate;
 
     @Autowired
-    private TransactionRepository repository;
+    private TransactionService service;
 
     @BeforeEach
     void setup() {
-        repository.clear();
+        service.clear();
     }
 
     @Test
@@ -42,7 +42,7 @@ public class TransactionIntegrationTest {
         ResponseEntity<Void> response = restTemplate.postForEntity("/transacao", request, Void.class);
 
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
-        assertEquals(1, repository.statistics(OffsetDateTime.now().minusSeconds(60)).getCount());
+        assertEquals(1, service.statistics(OffsetDateTime.now().minusSeconds(60)).getCount());
     }
 
     @Test
@@ -97,11 +97,11 @@ public class TransactionIntegrationTest {
 
     @Test
     void testClearTransactions() {
-        repository.insert(new TransactionRequest(BigDecimal.valueOf(100), OffsetDateTime.now().minusSeconds(10)));
+        service.insert(new TransactionRequest(BigDecimal.valueOf(100), OffsetDateTime.now().minusSeconds(10)));
 
         ResponseEntity<Void> response = restTemplate.exchange("/transacao", HttpMethod.DELETE, null, Void.class);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(0, repository.statistics(OffsetDateTime.now().minusSeconds(60)).getCount());
+        assertEquals(0, service.statistics(OffsetDateTime.now().minusSeconds(60)).getCount());
     }
 }
