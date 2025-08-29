@@ -13,5 +13,9 @@ public class TransactionRepository {
     public void insert(TransactionRequest transaction) {
         transactions.add(transaction);
     }
+
+    public void clear() {
+        transactions.clear();
+    }
     
 }

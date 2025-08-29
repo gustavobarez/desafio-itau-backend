@@ -30,6 +30,12 @@ public class TransactionController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
+    @DeleteMapping
+    public ResponseEntity clearTransactions() {
+        service.clear();
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<Void> handleInvalidJson() {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();

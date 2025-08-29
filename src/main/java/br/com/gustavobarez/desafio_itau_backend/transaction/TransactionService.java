@@ -39,4 +39,8 @@ public class TransactionService {
         repository.insert(transaction);
     }
 
+    public void clear() {
+        repository.clear();
+    }
+
 }
